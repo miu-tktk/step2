@@ -58,21 +58,21 @@ class HashTable:
     # |key|: The key of the item.
     # |value|: The value of the item.
     # Return value: True if a new item is added. False if the key already exists
-    #               and the value is updated.
+    #               and the value is updated. ?
     def put(self, key, value):
         assert type(key) == str
         self.check_size() # Note: Don't remove this code.
         bucket_index = calculate_hash(key) % self.bucket_size
-        item = self.buckets[bucket_index]
-        while item:
-            if item.key == key:
+        item = self.buckets[bucket_index] #item refers to the list of items in certain box #*item
+        while item: #when user want to change their password
+            if item.key == key:  
                 item.value = value
                 return False
             item = item.next
         new_item = Item(key, value, self.buckets[bucket_index])
-        self.buckets[bucket_index] = new_item
+        self.buckets[bucket_index] = new_item #* add new_item to the item
         self.item_count += 1
-        return True
+        return True #?
 
     # Get an item from the hash table.
     #
@@ -84,7 +84,7 @@ class HashTable:
         self.check_size() # Note: Don't remove this code.
         bucket_index = calculate_hash(key) % self.bucket_size
         item = self.buckets[bucket_index]
-        while item:
+        while item: 
             if item.key == key:
                 return (item.value, True)
             item = item.next
@@ -95,12 +95,28 @@ class HashTable:
     # |key|: The key.
     # Return value: True if the item is found and deleted successfully. False
     #               otherwise.
+    
     def delete(self, key):
         assert type(key) == str
         #------------------------#
         # Write your code here!  #
+        self.check_size()
+        bucket_index = calculate_hash(key) % self.bucket_size
+        item = self.buckets[bucket_index]
+        prev_item = None
+        while item:
+            if item.key == key: # If the item is found
+                if prev_item == None:#The item to be deleted is the first item in the backet
+                    self.buckets[bucket_index] = item.next
+                else: # The item to be deleted is in the middle or the end of the backet
+                    prev_item.next = item.next
+                self.item_count -= 1 #don't forget to reduce the count!
+                return True
+            prev_item = item
+            item = item.next
+        return False #If the item in not found
         #------------------------#
-        pass
+
 
     # Return the total number of items in the hash table.
     def size(self):
